@@ -1,6 +1,5 @@
 ### Librerías
 import pandas as pd
-from pandas import ExcelWriter
 import numpy as np
 from time import time
 import csv
@@ -56,7 +55,7 @@ def lectura_data(data, micro):
 
 def escritura_xlsx(exp, df_alar, df_data):
 
-    with ExcelWriter(exp) as writer: # pylint: disable=abstract-class-instantiated
+    with pd.ExcelWriter(exp) as writer: # pylint: disable=abstract-class-instantiated
         df_alar.to_excel(writer, sheet_name='ALAR', index=False)
         df_data.to_excel(writer, sheet_name='DATA', index=False)
     

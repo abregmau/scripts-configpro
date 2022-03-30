@@ -1,6 +1,5 @@
 ### Librerías
 import pandas as pd
-from pandas import ExcelWriter
 import numpy as np
 from time import time
 
