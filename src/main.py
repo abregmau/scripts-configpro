@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 from time import time
+from datetime import datetime
 import os
 import shutil
 
@@ -31,7 +32,6 @@ def constantes(df_datos, disp):
 	if df_datos.loc[disp,'Agru M3'] == 'si':
 		micro.append(3)
 
-	dire = df_datos.loc[disp,'Dirección proyecto']
 	m_cot = int(df_datos.loc[disp,'Micro DNP COT'])
 	dir_rtu =int(df_datos.loc[disp, 'Dir RTU DNP COT'])
 
@@ -46,24 +46,28 @@ def constantes(df_datos, disp):
 	global cot_b021
 	global agru_exp_xlsx
 
-	bd = dire + '\\' + dispositivo + '\\' + dispositivo + '.csv' # Dirección y nombre base de datos origen
+	bd = 'input\\RTUs\\' + dispositivo + '\\' + dispositivo + '.csv' # Dirección y nombre base de datos origen
 	
 	e423alar = []
 	e423data = []
 	didesc = []
 	for row in micro: # Creación de lista de rutas origen datos agrupadas
-		e423alar.append ( dire + '\\' + dispositivo + '\\e423.' + str(row-1) + '\\e423alar.csv')
-		e423data.append ( dire + '\\' + dispositivo + '\\e423.' + str(row-1) + '\\e423data.csv')
-		didesc.append ( dire + '\\' + dispositivo + '\\e423.' + str(row-1) + '\\didesc.txt')
+		e423alar.append ( 'input\\RTUs\\' + dispositivo + '\\e423.' + str(row-1) + '\\e423alar.csv')
+		e423data.append ( 'input\\RTUs\\' + dispositivo + '\\e423.' + str(row-1) + '\\e423data.csv')
+		didesc.append ( 'input\\RTUs\\' + dispositivo + '\\e423.' + str(row-1) + '\\didesc.txt')
 
-	b021_cfg = dire + '\\' + dispositivo + '\\b021.' + str(m_cot-1) + '\\B021CFG.csv'
-	b021_mt01 = dire + '\\' + dispositivo + '\\b021.' + str(m_cot-1) + '\\B021MT01.csv'
-	b021_mt02 = dire + '\\' + dispositivo + '\\b021.' + str(m_cot-1) + '\\B021MT02.csv'
-	b021_mt04 = dire + '\\' + dispositivo + '\\b021.' + str(m_cot-1) + '\\B021MT04.csv'
+	b021_cfg = 'input\\RTUs\\' + dispositivo + '\\b021.' + str(m_cot-1) + '\\B021CFG.csv'
+	b021_mt01 = 'input\\RTUs\\' + dispositivo + '\\b021.' + str(m_cot-1) + '\\B021MT01.csv'
+	b021_mt02 = 'input\\RTUs\\' + dispositivo + '\\b021.' + str(m_cot-1) + '\\B021MT02.csv'
+	b021_mt04 = 'input\\RTUs\\' + dispositivo + '\\b021.' + str(m_cot-1) + '\\B021MT04.csv'
 	cot_b021 = [b021_cfg, b021_mt01, b021_mt02, b021_mt04]
 
 	cot = 'input\\COT\\' + df_datos.loc[disp, 'COT'] + '.xlsx' # Dirección y nombre datos COT
 	agru_exp_xlsx = 'input\\AGRU\\' + dispositivo + '\\' + dispositivo + '_AGRU.xlsx' # Dirección y nombre base de datos de origen para generación de agrupadas
+
+	#Fecha y hora
+	now = datetime.now()
+	date_time = now.strftime('_%Y%m%d_%H%M%S')
 
 	#Destino de datos
 	global bd_exp
@@ -72,25 +76,25 @@ def constantes(df_datos, disp):
 	global e423alar_exp
 	global e423data_exp
 	global didesc_exp
-	bd_exp = 'output\\TABLAS\\' + dispositivo + '\\' + dispositivo + '_EXP.xlsx' # Dirección y nombre base completa a exportar
-	cot_exp = 'output\\TABLAS\\' + dispositivo + '\\' + dispositivo + '_COT_EXP.xlsx' # Dirección y nombre base agrupadas a exportar
-	agru_exp = 'output\\TABLAS\\' + dispositivo + '\\' + dispositivo + '_AGRU.xlsx' # Dirección y nombre base agrupadas a exportar
+	bd_exp = 'output\\TABLAS\\' + dispositivo + '\\' + dispositivo + '_EXP' + date_time + '.xlsx' # Dirección y nombre base completa a exportar
+	cot_exp = 'output\\TABLAS\\' + dispositivo + '\\' + dispositivo + '_COT_EXP' + date_time + '.xlsx' # Dirección y nombre base agrupadas a exportar
+	agru_exp = 'output\\TABLAS\\' + dispositivo + '\\' + dispositivo + '_AGRU' + date_time + '.xlsx' # Dirección y nombre base agrupadas a exportar
 	os.makedirs('output\\TABLAS\\' + dispositivo , exist_ok=True)
 
 	e423alar_exp = []
 	e423data_exp = []
 	didesc_exp = []
 	for row in micro: # Creación de lista de rutas para exportar
-		e423alar_exp.append ('output\\AGRU_MOD\\' + dispositivo + '\\e423.' + str(row-1) + '/e423alar.csv')
-		e423data_exp.append ('output\\AGRU_MOD\\' + dispositivo + '\\e423.' + str(row-1) + '/e423data.csv')
-		didesc_exp.append ('output\\AGRU_MOD\\' + dispositivo + '\\e423.' + str(row-1) + '/didesc.txt')
-		os.makedirs('output\\AGRU_MOD\\' + dispositivo + '\\e423.' + str(row-1), exist_ok=True)
+		e423alar_exp.append ( 'output\\AGRU_MOD\\' + dispositivo + '\\e423.' + str(row-1) + '/e423alar.csv')
+		e423data_exp.append ( 'output\\AGRU_MOD\\' + dispositivo + '\\e423.' + str(row-1) + '/e423data.csv')
+		didesc_exp.append ( 'output\\AGRU_MOD\\' + dispositivo + '\\e423.' + str(row-1) + '/didesc.txt')
+		os.makedirs( 'output\\AGRU_MOD\\' + dispositivo + '\\e423.' + str(row-1), exist_ok=True)
 
 
 def menu():
 	## Función que limpia la pantalla y muestra nuevamente el menu
 	os.system('cls') # NOTA para windows tienes que cambiar clear por cls
-	print('BASE DE DATOS RTUs - ULTRA V0.2')
+	print('BASE DE DATOS RTUs - ULTRA V0.4 - 13/01/2021')
 	print('Desarrollador Abregú Mauricio\n\n')
 	print ('Selecciona una opción')
 	print ('\t1 - Seleccionar Dispositivo')
@@ -100,8 +104,7 @@ def menu():
 	print ('\t5 - Archivo AGRU')
 	print ('\t6 - Crear Base de datos opción 3 + 4 + 5 en un archivo')
 	print ('\t7 - Generar .csv Agrupadas a partir de archivo AGRU')
-
-
+	
 	print ('\t9 - Salir')
 
 	opcion = input('Escriba una opción\n')
@@ -110,7 +113,7 @@ def menu():
 def select_disp(df_datos):
 	## Función que limpia la pantalla y muestra nuevamente el menu
 	os.system('cls') # NOTA para windows tienes que cambiar clear por cls
-	print(df_datos[['Dispositivo', 'Dirección proyecto']])
+	print(df_datos[['Dispositivo']])
 	disp = input('Escriba una opción\n')
 	while disp not in str(df_datos.index.values):
 		disp = input('Opción no válida, escriba una opción\n') 
