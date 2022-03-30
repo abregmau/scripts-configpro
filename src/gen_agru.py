@@ -1,12 +1,8 @@
 ### Librerías
-
-import csv
 import pandas as pd
 from pandas import ExcelWriter
 import numpy as np
 from time import time
-
-
 
 ### Definición de constantes y variables
 
@@ -66,12 +62,12 @@ def procesa_agru(df_alar, df_data, m): # Función Procesar agrupamientos
     df_alar.sort_values(['Micro','Local Point'], inplace=True) # Ordenar tabla ALAR
 
     df_alar = df_alar[df_alar['Micro'] == m] # Filtrar tabla por micro
-    df_alar = df_alar.reset_index()
+    df_alar = df_alar.reset_index(drop=True)
 
     df_data = df_data[df_data['Micro'] == m] # Filtrar tabla por micro
-    df_data = df_data.reset_index()
+    df_data = df_data.reset_index(drop=True)
 
-    df_descripcion = df_alar['Descripción']
+    df_descripcion = df_alar['Descripción'] # Generar dataframe para exporta DIDESC
 
     # Generar indices y constates para iteración
 
@@ -92,8 +88,8 @@ def procesa_agru(df_alar, df_data, m): # Función Procesar agrupamientos
     for i in row_alar: # Iteración sobre ALAR
         h=0
         print('Procesando agrupada nº', i+1, 'de', len_row_alar,'Micro', m)
-        df_data1 = df_data[df_data['LP_Agru'] == i+1] # Filtrar tabla por micro
-        df_data1 = df_data1.reset_index()
+        df_data1 = df_data[df_data['LP_Agru'] == i+1] # Filtrar tabla por agrupada
+        df_data1 = df_data1.reset_index(drop=True)
 
         row_data = row_data = range(0, df_data1.shape[0])
         for j in row_data: # Iteración sobre DATA

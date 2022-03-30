@@ -1,30 +1,9 @@
 ### Librerías
-
-import csv
 import pandas as pd
 from pandas import ExcelWriter
-
-
-### Definición de constantes y variables
-
-dispositivo = 'CN-62'
-
-micro = [ 1, 2, 3] # Define los números de micro donde se encuentran los agrupamientos
-
-alar_exp = 'output/TABLAS/' + dispositivo + '/' + dispositivo + '_alar.csv' # Dirección y nombre base de datos destino
-data_exp = 'output/TABLAS/' + dispositivo + '/' + dispositivo + '_data.csv' # Dirección y nombre base de datos destino
-
-agru_exp_xlsx = 'output/TABLAS/' + dispositivo + '/' + dispositivo + '_AGRU.xlsx' # Dirección y nombre base de datos destino
-
-e423alar = []
-e423data = []
-didesc = []
-
-for row in micro: # Creación de lista de rutas
-    e423alar.append ( 'input/RTUs/' + dispositivo + '/e423.' + str(row-1) + '/e423alar.csv')
-    e423data.append ( 'input/RTUs/' + dispositivo + '/e423.' + str(row-1) + '/e423data.csv')
-    didesc.append ( 'input/RTUs/' + dispositivo + '/e423.' + str(row-1) + '/didesc.txt')
-
+import numpy as np
+from time import time
+import csv
 
 ### Funciones
 
@@ -75,53 +54,43 @@ def lectura_data(data, micro):
     
     return lista
 
-def escritura(bd, lista, encabezado):
+def escritura_xlsx(exp, df_alar, df_data):
 
-    lista.insert(0, encabezado)
-
-    file = open(bd, 'w', newline="")
-    with file:
-        writer = csv.writer(file)
-        writer.writerows(lista)
-    print("Escritura " + bd + " completa")
-
-def escritura_xlsx(bd, alar, enc_alar, data, enc_data):
-
-    df_alar = pd.DataFrame(data=alar, columns=enc_alar)
-    df_data = pd.DataFrame(data=data, columns=enc_data)
-
-    with ExcelWriter(bd) as writer: # pylint: disable=abstract-class-instantiated
+    with ExcelWriter(exp) as writer: # pylint: disable=abstract-class-instantiated
         df_alar.to_excel(writer, sheet_name='ALAR', index=False)
         df_data.to_excel(writer, sheet_name='DATA', index=False)
     
-    print("Escritura " + bd + " completa")
-
-### Código
-
-lista_alar = []
-enc_alar = [ 'Descripción', 'Micro', 'Local Point', 'Operación', 'Inicio', 'Nro. Alarmas', 'Fechado' ] # Encabezado
-
-lista_data = []
-enc_data = [ 'Syspoint', 'Descripción', 'Alarma', 'Operacion', 'Fechado', 'Status', 'Micro', 'Índice', 'LP_Agru', 'TXT_Agru'] # Encabezado
-
-for m in micro:
-    lista_alar.extend(lectura_alar(e423alar[m-1], didesc[m-1], micro[m-1])) # Levantar en una lista todas las agrupadas de todos los micros
-    lista_data.extend(lectura_data(e423data[m-1], micro[m-1])) # Levantar en una lista todas las entradas agrupadas de todos los micros
-
-for a in lista_alar: # Doble for para completar LP y TXT y Operación de agrupada a la que pertence en tabla DATA
-    i=0
-    for d in lista_data:
-        if a[4] != '': # No comparar las agrupadas de reserva
-            if d[6] == a[1] and d[7] >= a[4] and d[7] < a[4] + a[5]:
-                lista_data[i][3] = a[3]
-                lista_data[i][8] = a[2]
-                lista_data[i][9] = a[0]
-        i=i+1
+    print("Escritura " + exp + " completa")
 
 
-#escritura(alar_exp, lista_alar[:], enc_alar) # Escribir .csv con base de datos
-#escritura(data_exp, lista_data[:], enc_data) # Escribir .csv con base de datos
+def lectura(e423alar, e423data, didesc, micro):
 
-escritura_xlsx(agru_exp_xlsx, lista_alar[:], enc_alar, lista_data[:], enc_data) # Escribir .xlsx con base de datos
+    print('Leyendo archivos agrupadas...')
+    
+    lista_alar = []
+    enc_alar = [ 'Descripción', 'Micro', 'Local Point', 'Operación', 'Inicio', 'Nro. Alarmas', 'Fechado' ] # Encabezado
 
-### Fin Código
+    lista_data = []
+    enc_data = [ 'Syspoint', 'Descripción', 'Alarma', 'Operación', 'Fechado', 'Status', 'Micro', 'Índice', 'LP_Agru', 'TXT_Agru'] # Encabezado
+
+    for m in micro:
+        print('Leyendo micro:',m)
+        lista_alar.extend(lectura_alar(e423alar[m-1], didesc[m-1], micro[m-1])) # Levantar en una lista todas las agrupadas de todos los micros
+        lista_data.extend(lectura_data(e423data[m-1], micro[m-1])) # Levantar en una lista todas las entradas agrupadas de todos los micros
+
+    print('Procesando Agrupamientos...')
+    for a in lista_alar: # Doble for para completar LP y TXT y Operación de agrupada a la que pertence en tabla DATA
+        i=0
+        for d in lista_data:
+            if a[4] != '': # No comparar las agrupadas de reserva
+                if d[6] == a[1] and d[7] >= a[4] and d[7] < a[4] + a[5]:
+                    lista_data[i][3] = a[3]
+                    lista_data[i][8] = a[2]
+                    lista_data[i][9] = a[0]
+            i=i+1
+    
+    df_alar = pd.DataFrame(data=lista_alar, columns=enc_alar)
+    df_data = pd.DataFrame(data=lista_data, columns=enc_data)
+
+    print('Agrupamientos procesados con éxito')
+    return df_alar, df_data
