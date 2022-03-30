@@ -1,5 +1,6 @@
 user.cfg
 __pycache__
+.vscode
 *.log
 
 
