@@ -3,25 +3,6 @@ import pandas as pd
 import numpy as np
 from time import time
 
-### Definición de constantes y variables
-
-dispositivo = 'CN-62'
-
-micro = [ 1, 2, 3] # Define los números de micro donde se encuentran los agrupamientos
-
-agru_exp_xlsx = 'input/AGRU/' + dispositivo + '/' + dispositivo + '_AGRU.xlsx' # Dirección y nombre base de datos de origen
-
-e423alar = []
-e423data = []
-didesc = []
-
-for row in micro: # Creación de lista de rutas
-    e423alar.append ( 'output/AGRU MOD/' + dispositivo + '/e423.' + str(row-1) + '/e423alar.csv')
-    e423data.append ( 'output/AGRU MOD/' + dispositivo + '/e423.' + str(row-1) + '/e423data.csv')
-    didesc.append ( 'output/AGRU MOD/' + dispositivo + '/e423.' + str(row-1) + '/didesc.txt')
-
-start_time = time() # Star Medición de tiempo
-
 ### Funciones
 
 def leer_conf(agru_file):
@@ -126,18 +107,3 @@ def procesa_agru(df_alar, df_data, m): # Función Procesar agrupamientos
             df_alar_exp.loc[LP-1,'aux2'] = '0'
 
     return df_alar_exp, df_data_exp, df_descripcion
-
-
-### Codigo
-
-
-df_alar, df_data = leer_conf(agru_exp_xlsx) # Lectura de configuración a generar desde archivo AGRU.xlsx
-
-for m in micro:
-    df_alar_exp, df_data_exp, df_descripcion = procesa_agru(df_alar, df_data, m) # Llamdo a proceso
-    df_alar_exp.to_csv(e423alar[m-1], index=False, header=False) # Escirbir .csv ALAR
-    df_data_exp.to_csv(e423data[m-1], index=False, header=False) # Escribir .csv DATA
-    df_descripcion.to_csv(didesc[m-1], index=False, header=False) # Escribir .txt
-
-elapsed_time = time() - start_time
-print("Código Ejecutado con exito, tiempo de proceso: {0:.3}".format(elapsed_time))

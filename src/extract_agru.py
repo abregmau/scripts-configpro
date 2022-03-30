@@ -74,8 +74,9 @@ def lectura(e423alar, e423data, didesc, micro):
 
     for m in micro:
         print('Leyendo micro:',m)
-        lista_alar.extend(lectura_alar(e423alar[m-1], didesc[m-1], micro[m-1])) # Levantar en una lista todas las agrupadas de todos los micros
-        lista_data.extend(lectura_data(e423data[m-1], micro[m-1])) # Levantar en una lista todas las entradas agrupadas de todos los micros
+        j = micro.index(m)
+        lista_alar.extend(lectura_alar(e423alar[j], didesc[j], micro[j])) # Levantar en una lista todas las agrupadas de todos los micros
+        lista_data.extend(lectura_data(e423data[j], micro[j])) # Levantar en una lista todas las entradas agrupadas de todos los micros
 
     print('Procesando Agrupamientos...')
     for a in lista_alar: # Doble for para completar LP y TXT y Operación de agrupada a la que pertence en tabla DATA

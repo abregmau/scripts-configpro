@@ -9,10 +9,11 @@ input/COT/*
 !input/COT/formato.txt
 input/RTUs/*
 !input/RTUs/formato.txt
-output/AGRU MOD/*
-!output/AGRU MOD/formato.txt
+output/AGRU_MOD/*
+!output/AGRU_MOD/formato.txt
 output/TABLAS/*
 !output/TABLAS/formato.txt
+input/Dispositivos.xlsx
 
 compiler/build
 compiler/dist
