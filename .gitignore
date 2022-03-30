@@ -3,7 +3,6 @@ __pycache__
 .vscode
 *.log
 
-
 input/AGRU/*
 !input/AGRU/formato.txt
 input/COT/*
@@ -14,3 +13,7 @@ output/AGRU MOD/*
 !output/AGRU MOD/formato.txt
 output/TABLAS/*
 !output/TABLAS/formato.txt
+
+compiler/build
+compiler/dist
+exe
