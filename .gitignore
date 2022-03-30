@@ -1,0 +1,15 @@
+user.cfg
+__pycache__
+*.log
+
+
+input/AGRU/*
+!input/AGRU/formato.txt
+input/COT/*
+!input/COT/formato.txt
+input/RTUs/*
+!input/RTUs/formato.txt
+output/AGRU MOD/*
+!output/AGRU MOD/formato.txt
+output/TABLAS/*
+!output/TABLAS/formato.txt
